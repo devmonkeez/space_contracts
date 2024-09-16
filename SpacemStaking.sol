@@ -35,13 +35,12 @@ contract Staking is Ownable(msg.sender), ReentrancyGuard {
 
     // Mapping from staker address to array of stakes
     mapping(address => Stake[]) public stakes;
+    uint256 public staked = 0;
 
-    // Total reward tokens pool
-    uint256 public rewardPool;
 
     event Staked(address indexed user, uint256 amount, uint256 duration, uint256 index);
     event Claimed(address indexed user, uint256 amount, uint256 reward, uint256 index);
-    event RewardPoolUpdated(uint256 newRewardPool);
+
 
     // Constructor to set the initial values for the token
     constructor(address tokenAddress) {
@@ -69,13 +68,13 @@ contract Staking is Ownable(msg.sender), ReentrancyGuard {
             "Invalid staking duration"
         );
         uint256 rewardRate = getRewardRate(duration);
-        uint256 reward = amount.mul(rewardRate).div(10000); // Convert percentage to reward amount
+        uint256 reward = amount.mul(rewardRate).div(10000); 
+        uint256 rewardPool = token.balanceOf(address(this)).sub(staked);
         require(rewardPool >= reward, "Not enough tokens in reward pool");
         require(token.transferFrom(msg.sender, address(this), amount), "Failed to transfer tokens for staking");
 
         stakes[msg.sender].push(Stake(amount, block.timestamp, duration, false));
-        rewardPool = rewardPool.sub(reward); // Deduct the potential reward from the pool
-
+        staked += amount;
         emit Staked(msg.sender, amount, duration, stakes[msg.sender].length - 1);
     }
 
@@ -90,15 +89,10 @@ contract Staking is Ownable(msg.sender), ReentrancyGuard {
         uint256 rewardRate = getRewardRate(userStake.duration);
         uint256 reward = userStake.amount.mul(rewardRate).div(10000); // Convert percentage to reward amount
         uint256 totalAmount = userStake.amount.add(reward);
-
+        staked -= totalAmount;
         require(token.transfer(msg.sender, totalAmount), "Failed to transfer tokens");
 
         emit Claimed(msg.sender, userStake.amount, reward, stakeIndex);
-    }
-
-    function setRewardPool(uint256 _rewardPool) external onlyOwner {
-        rewardPool = _rewardPool;
-        emit RewardPoolUpdated(_rewardPool);
     }
 
 }
