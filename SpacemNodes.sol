@@ -152,8 +152,6 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         uint256 price = getPrice(collection.minted());
         uint256 cost = quantity * price;
 
-        require(usdtAmount >= cost, "Insufficient USDT provided");
-
         // Ensure the payment is transferred for this portion
         require(usdtToken.transferFrom(msg.sender, address(this), cost), "USDT payment failed");
 
@@ -355,15 +353,6 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
 
     function changeCollectionOwner(address _newOwner) public onlyOwner {
         collection.transferOwnership(_newOwner);
-    }
-
-    function transferErcTokens(IERC20 _token, address _receiver, uint256 _amount) public onlyOwner {
-        require(!ERC20_TRANSFERS_BLOCKED, "ERC20 transfers are permanently blocked");
-        require(_token.transfer(_receiver, _amount), "Transfer failed");
-    }
-
-    function transferFunds(address _to, uint256 _amount) external onlyOwner {
-        payable(_to).transfer(_amount);
     }
 
     function blockErc20Transfers() public onlyOwner {

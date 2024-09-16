@@ -101,14 +101,6 @@ contract Staking is Ownable(msg.sender), ReentrancyGuard {
         emit RewardPoolUpdated(_rewardPool);
     }
 
-    function transferErcTokens(IERC20 _token, address _receiver, uint256 _amount) public onlyOwner {
-        require(_token.transfer(_receiver, _amount), "Transfer failed");
-    }
-
-    function transferFunds(address _to, uint256 _amount) external onlyOwner {
-        payable(_to).transfer(_amount);
-    }
-
     function updateRewardPool() external {
         uint256 totalStaked = 0;
         for (uint256 i = 0; i < stakes[msg.sender].length; i++) {
