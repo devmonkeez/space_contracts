@@ -101,14 +101,4 @@ contract Staking is Ownable(msg.sender), ReentrancyGuard {
         emit RewardPoolUpdated(_rewardPool);
     }
 
-    function updateRewardPool() external {
-        uint256 totalStaked = 0;
-        for (uint256 i = 0; i < stakes[msg.sender].length; i++) {
-            if (!stakes[msg.sender][i].claimed) {
-                totalStaked = totalStaked.add(stakes[msg.sender][i].amount);
-            }
-        }
-        rewardPool = token.balanceOf(address(this)).sub(totalStaked);
-        emit RewardPoolUpdated(rewardPool);
-    }
 }
