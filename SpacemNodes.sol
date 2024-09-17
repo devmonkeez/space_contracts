@@ -241,14 +241,6 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         require(rewardsToken.transfer(communityRewardsAddress, DAILY_COMMUNITY_REWARDS), "Failed to transfer DAILY_COMMUNITY_REWARDS");
     }
 
-    function buyAdmin(address _user, uint256 quantity) public onlyOwner {
-        for (uint256 j = 0; j < quantity; j++) {
-            uint256 tokenId = collection.mint(_user);
-            mintTime[tokenId] = block.timestamp;
-            lastClaim[tokenId] = block.timestamp;
-        }
-    }
-
     function importRewards(uint256[] memory _tokenIDs, uint256[] memory _mintTimes, uint256[] memory _lastClaims) public onlyOwner {
         require(_tokenIDs.length == _mintTimes.length && _tokenIDs.length == _lastClaims.length, "Array lengths must match");
         for (uint256 j = 0; j < _tokenIDs.length; j++) {
