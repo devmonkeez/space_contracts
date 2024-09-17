@@ -114,7 +114,6 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     mapping(uint256 => uint256) public dailyNodeReward;
     uint256 public lastDistributionDay;
     bool public IS_PAUSED = false;
-    bool public ERC20_TRANSFERS_BLOCKED = false;
 
     event CollectionCreated(address collectionAddress);
 
@@ -353,10 +352,6 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
 
     function changeCollectionOwner(address _newOwner) public onlyOwner {
         collection.transferOwnership(_newOwner);
-    }
-
-    function blockErc20Transfers() public onlyOwner {
-        ERC20_TRANSFERS_BLOCKED = true;
     }
 
     function exportData() public view onlyOwner returns (
