@@ -142,7 +142,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         }
     }
 
-    function buy(uint256 quantity, uint256 usdtAmount, address referrer) public {
+    function buy(uint256 quantity, uint256 usdtAmount, address referrer) public nonReentrant {
         if(IS_PAUSED) collection.unpause();
 
         uint256 available = collection.maxSupply() - collection.minted();
