@@ -147,7 +147,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         if(IS_PAUSED) collection.unpause();
 
         uint256 available = collection.maxSupply() - collection.minted();
-        require(available > 0, "Not enough NFTs available.");
+        require(quantity > 0 && quantity <= available, "Not enough NFTs available.");
 
         uint256 price = getPrice(collection.minted());
         uint256 cost = quantity * price;
