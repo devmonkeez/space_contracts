@@ -331,30 +331,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         IS_PAUSED = _value;
     }
 
-    function changeSafeAddress(address _safeAddress) public onlyOwner {
-        safeAddress = _safeAddress;
-    }
-
-
-    function changeStakingAddress(address _stakingAddress) public onlyOwner {
-        stakingAddress = _stakingAddress;
-    }
-
-
-    function changeMarketingAddress(address _marketingAddress) public onlyOwner {
-        marketingAddress = _marketingAddress;
-    }
-
-
-    function changeCommunityRewardsAddress(address _communityRewardsAddress) public onlyOwner {
-        communityRewardsAddress = _communityRewardsAddress;
-    }
-
-    function changeCollectionOwner(address _newOwner) public onlyOwner {
-        collection.transferOwnership(_newOwner);
-    }
-
-    function exportData() public view onlyOwner returns (
+    function exportData() public view returns (
         uint256[] memory, uint256[] memory, uint256[] memory, address[] memory
     ) {
         uint256 totalSupply = collection.totalSupply();
