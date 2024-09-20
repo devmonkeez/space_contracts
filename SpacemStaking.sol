@@ -89,7 +89,7 @@ contract Staking is Ownable(msg.sender), ReentrancyGuard {
         uint256 rewardRate = getRewardRate(userStake.duration);
         uint256 reward = userStake.amount.mul(rewardRate).div(10000); // Convert percentage to reward amount
         uint256 totalAmount = userStake.amount.add(reward);
-        staked -= totalAmount;
+        staked -= userStake.amount;
         require(token.transfer(msg.sender, totalAmount), "Failed to transfer tokens");
 
         emit Claimed(msg.sender, userStake.amount, reward, stakeIndex);
