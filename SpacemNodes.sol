@@ -113,7 +113,6 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
 
     mapping(uint256 => uint256) public dailyNodeReward;
     uint256 public lastDistributionDay;
-    bool public IS_PAUSED = false;
 
     event CollectionCreated(address collectionAddress);
 
@@ -152,7 +151,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     }
 
     function buy(uint256 quantity, uint256 usdtAmount, address referrer) public nonReentrant {
-        if(IS_PAUSED) collection.unpause();
+      
 
         uint256 available = collection.maxSupply() - collection.minted();
         require(quantity > 0 && quantity <= available, "Not enough NFTs available.");
@@ -181,7 +180,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
             lastClaim[tokenId] = block.timestamp;
         }
 
-        if(IS_PAUSED) collection.pause();
+        
     }
 
     function calculateRewards(uint256 tokenId) public view returns (uint256) {
@@ -325,10 +324,6 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         }
 
         return nfts;
-    }
-
-    function changeIsPaused(bool _value) public onlyOwner {
-        IS_PAUSED = _value;
     }
 
     function exportData() public view returns (
