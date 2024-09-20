@@ -107,9 +107,9 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     uint256 constant DAILY_TOKENS = 451000000000000000000;
     uint256 constant DISTIBUTION_SPEED = 1 days;  
     uint256 constant DAYS = 1826;
-    uint256 constant DAILY_STAKING = 602409638554000000000000;
-    uint256 constant DAILY_MARKETING = 602409638554000000000000;
-    uint256 constant DAILY_COMMUNITY_REWARDS = 1204819277110000000000000;
+    uint256 constant DAILY_STAKING = 1500000000000000000000000;
+    uint256 constant DAILY_MARKETING = 1500000000000000000000000;
+    uint256 constant DAILY_COMMUNITY_REWARDS = 3000000000000000000000000;
 
     mapping(uint256 => uint256) public dailyNodeReward;
     uint256 public lastDistributionDay;
