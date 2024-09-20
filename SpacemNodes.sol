@@ -142,14 +142,22 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         }
     }
 
+    function getPriceForQuantity(uint256 quantity) public view returns (uint256) {
+        uint256 cost = 0;
+        for (uint256 i = 0; j < quantity; j++) {
+            uint256 price = getPrice(collection.minted() + i);
+            cost += price;
+        }
+        return cost;
+    }
+
     function buy(uint256 quantity, uint256 usdtAmount, address referrer) public nonReentrant {
         if(IS_PAUSED) collection.unpause();
 
         uint256 available = collection.maxSupply() - collection.minted();
         require(quantity > 0 && quantity <= available, "Not enough NFTs available.");
 
-        uint256 price = getPrice(collection.minted());
-        uint256 cost = quantity * price;
+        uint256 cost = getPriceForQuantity(quantity);
 
         // Ensure the payment is transferred for this portion
         require(usdtToken.transferFrom(msg.sender, address(this), cost), "USDT payment failed");
