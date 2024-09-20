@@ -61,7 +61,7 @@ contract Staking is Ownable(msg.sender), ReentrancyGuard {
         revert("Invalid staking duration");
     }
 
-    function stake(uint256 amount, uint256 duration) external {
+    function stake(uint256 amount, uint256 duration) external nonReentrant {
         require(amount > 0, "Cannot stake 0 tokens");
         require(
             duration == ONE_MONTH || duration == THREE_MONTHS || duration == SIX_MONTHS || duration == ONE_YEAR || duration == TWO_YEARS || duration == FIVE_YEARS,
