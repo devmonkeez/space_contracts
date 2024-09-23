@@ -22,7 +22,7 @@ contract Collection is ERC721, ERC721Enumerable, ERC721Pausable, Ownable(msg.sen
         uint256 _maxSupply,
         string memory _baseURI 
     )
-        ERC721("SPACEM NODE", "SPACEMN")  
+        ERC721("SPACEM NODE", "SPCMND")  
     {
         maxSupply = _maxSupply;
         baseURI = _baseURI;
@@ -88,7 +88,6 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     address public safeAddress = 0x511C645389eBe73aecFfaA57924d14ec46c13de8;
     address public stakingAddress = 0x62766990101d74f393F25e538191c00C40cB1fe4;
     address public marketingAddress = 0x27Ac53EF2B3D37fFee3aa11bf9E5B81c876D3572;
-    address public communityRewardsAddress = 0x43e855635009b1f04fc8961852638B895A272020;
 
     struct NFTInfo {
         address collectionAddress;
@@ -104,12 +103,11 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     mapping(address => string) public inviteCodeForAddress;
     mapping(address => uint256) public invitePercent;
 
-    uint256 constant DAILY_TOKENS = 451000000000000000000;
+    uint256 constant DAILY_TOKENS = 601330000000000000000;
     uint256 constant DISTIBUTION_SPEED = 1 days;  
     uint256 constant DAYS = 1826;
     uint256 constant DAILY_STAKING = 1500000000000000000000000;
     uint256 constant DAILY_MARKETING = 1500000000000000000000000;
-    uint256 constant DAILY_COMMUNITY_REWARDS = 3000000000000000000000000;
 
     mapping(uint256 => uint256) public dailyNodeReward;
     uint256 public lastDistributionDay;
@@ -143,16 +141,16 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
 
     function getPriceForQuantity(uint256 quantity) public view returns (uint256) {
         uint256 cost = 0;
-        for (uint256 i = 0; j < quantity; j++) {
+        for (uint256 i = 0; i < quantity; i++) {
             uint256 price = getPrice(collection.minted() + i);
             cost += price;
         }
         return cost;
     }
 
-    function buy(uint256 quantity, uint256 usdtAmount, address referrer) public nonReentrant {
+    function buy(uint256 quantity, address referrer) public nonReentrant {
       
-
+        _dailyDistributeIfNeeded();
         uint256 available = collection.maxSupply() - collection.minted();
         require(quantity > 0 && quantity <= available, "Not enough NFTs available.");
 
@@ -206,7 +204,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
 
     function claimRewards(uint256 tokenId) public nonReentrant {
         require(collection.ownerOf(tokenId) == msg.sender, "You are not the owner of this token");
-
+        _dailyDistributeIfNeeded();
         uint256 rewardAmount = calculateRewards(tokenId);
         require(rewardAmount > 0, "No rewards to claim");
 
@@ -215,6 +213,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     }
 
     function claimAllRewards() public nonReentrant {
+        _dailyDistributeIfNeeded();
         uint256 numTokens = collection.balanceOf(msg.sender);
         uint256 totalReward = 0;
 
@@ -231,21 +230,24 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         require(totalReward > 0, "No rewards to claim");
         require(rewardsToken.transfer(msg.sender, totalReward), "Failed to transfer rewards");
     }
-    
+
     function dailyDistribute() public nonReentrant {
+        _dailyDistributeIfNeeded();
+    }
+
+    function _dailyDistributeIfNeeded() internal {
         uint256 today = block.timestamp / DISTIBUTION_SPEED * DISTIBUTION_SPEED; // Normalize to the start of the day
 
         // Check if function has already been run today
-        require(lastDistributionDay < today, "Distribution already done for today");
+        if (lastDistributionDay < today) {
+            // Calculate reward based on the number of tokens minted
+            uint256 reward = (DAILY_TOKENS * collection.maxSupply()) / collection.minted();
+            dailyNodeReward[today] = reward;
+            lastDistributionDay = today; // Update the last distribution day to today
 
-        // Calculate reward based on the number of tokens minted
-        uint256 reward = (DAILY_TOKENS * collection.maxSupply()) / collection.minted();
-        dailyNodeReward[today] = reward;
-        lastDistributionDay = today; // Update the last distribution day to today
-
-        require(rewardsToken.transfer(stakingAddress, DAILY_STAKING), "Failed to transfer DAILY_STAKING");
-        require(rewardsToken.transfer(marketingAddress, DAILY_MARKETING), "Failed to transfer DAILY_MARKETING");
-        require(rewardsToken.transfer(communityRewardsAddress, DAILY_COMMUNITY_REWARDS), "Failed to transfer DAILY_COMMUNITY_REWARDS");
+            require(rewardsToken.transfer(stakingAddress, DAILY_STAKING), "Failed to transfer DAILY_STAKING");
+            require(rewardsToken.transfer(marketingAddress, DAILY_MARKETING), "Failed to transfer DAILY_MARKETING");
+        }
     }
 
     function importRewards(uint256[] memory _tokenIDs, uint256[] memory _mintTimes, uint256[] memory _lastClaims) public onlyOwner {
