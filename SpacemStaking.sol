@@ -72,9 +72,10 @@ contract Staking is Ownable(msg.sender), ReentrancyGuard {
         uint256 rewardPool = token.balanceOf(address(this)).sub(staked);
         require(rewardPool >= reward, "Not enough tokens in reward pool");
         require(token.transferFrom(msg.sender, address(this), amount), "Failed to transfer tokens for staking");
-
         stakes[msg.sender].push(Stake(amount, block.timestamp, duration, false));
-        staked += amount;
+
+        uint256 totalAmount = amount.add(reward);
+        staked += totalAmount;
         emit Staked(msg.sender, amount, duration, stakes[msg.sender].length - 1);
     }
 
@@ -89,7 +90,7 @@ contract Staking is Ownable(msg.sender), ReentrancyGuard {
         uint256 rewardRate = getRewardRate(userStake.duration);
         uint256 reward = userStake.amount.mul(rewardRate).div(10000); // Convert percentage to reward amount
         uint256 totalAmount = userStake.amount.add(reward);
-        staked -= userStake.amount;
+        staked -= totalAmount;
         require(token.transfer(msg.sender, totalAmount), "Failed to transfer tokens");
 
         emit Claimed(msg.sender, userStake.amount, reward, stakeIndex);
