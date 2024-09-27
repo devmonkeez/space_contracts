@@ -236,6 +236,9 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     }
 
     function _dailyDistributeIfNeeded() internal {
+        if (collection.minted() == 0) {
+            return;
+        }
         uint256 today = block.timestamp / DISTIBUTION_SPEED * DISTIBUTION_SPEED; // Normalize to the start of the day
 
         // Check if function has already been run today
