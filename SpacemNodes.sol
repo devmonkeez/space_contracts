@@ -174,10 +174,10 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         // Mint the NFTs
         for (uint256 j = 0; j < quantity; j++) {
             uint256 tokenId = collection.mint(msg.sender);
+            referredBy[tokenId] = referrer;
             mintTime[tokenId] = block.timestamp;
             lastClaim[tokenId] = block.timestamp;
         }
-
         
     }
 
