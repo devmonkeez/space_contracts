@@ -141,6 +141,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     }
 
     function getPriceForQuantity(uint256 quantity) public view returns (uint256) {
+        //get price gor quantity
         uint256 cost = 0;
         for (uint256 i = 0; i < quantity; i++) {
             uint256 price = getPrice(collection.minted() + i);
