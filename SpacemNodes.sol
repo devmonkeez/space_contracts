@@ -86,7 +86,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     uint256 public contractStartTime = 1715260175;
     uint256 public contractEndTime = 1873026575;
     address public safeAddress = 0x511C645389eBe73aecFfaA57924d14ec46c13de8;
-    address public stakingAddress = 0x62766990101d74f393F25e538191c00C40cB1fe4;
+    address public stakingAddress;
     address public marketingAddress = 0x27Ac53EF2B3D37fFee3aa11bf9E5B81c876D3572;
 
     struct NFTInfo {
@@ -114,10 +114,11 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
 
     event CollectionCreated(address collectionAddress);
 
-    constructor(address _collection) {
+    constructor(address _collection, address _stakingAddress) {
         usdtToken = IERC20(0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7);
         rewardsToken = IERC20(0x3c780F5cBF94De3EFCec964Af928D08c4508EeBE);
         collection = Collection(_collection);
+        stakingAddress = _stakingAddress;
     }
 
     function addRefferal(
