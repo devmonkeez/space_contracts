@@ -222,7 +222,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
             uint256 rewardAmount = calculateRewards(tokenId);
 
             if (rewardAmount > 0) {
-                lastClaim[tokenId] = block.timestamp;
+                lastClaim[tokenId] = block.timestamp; //update last claim
                 totalReward += rewardAmount;
             }
         }
