@@ -17,6 +17,7 @@ contract Collection is ERC721, ERC721Enumerable, ERC721Pausable, Ownable(msg.sen
      uint256 public maxSupply;
     uint256 public minted;
     string public baseURI;
+    
 
     constructor(
         uint256 _maxSupply,
@@ -71,9 +72,11 @@ contract Collection is ERC721, ERC721Enumerable, ERC721Pausable, Ownable(msg.sen
         return super.supportsInterface(interfaceId);
     }
 
-      // Override the tokenURI function to return the base URI
-    function tokenURI(uint256) public view override returns (string memory) {
-        return baseURI;
+
+    using Strings for uint256;
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        require(_ownerOf(tokenId) != address(0), "ERC721: nonexistent token!");
+        return string(abi.encodePacked(baseURI, tokenId.toString()));
     }
 }
 
@@ -141,14 +144,15 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     }
 
     function getPriceForQuantity(uint256 quantity) public view returns (uint256) {
-        //get price gor quantity
         uint256 cost = 0;
-        for (uint256 i = 0; i < quantity; i++) {
+        for (uint256 i = 1; i < quantity; i++) {
             uint256 price = getPrice(collection.minted() + i);
             cost += price;
         }
         return cost;
     }
+
+
 
     function buy(uint256 quantity, address referrer) public nonReentrant {
       
@@ -170,8 +174,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         uint256 safeAmount = cost - refAmount;
         require(usdtToken.transfer(safeAddress, safeAmount), "USDT safe payment failed");
 
-        // Save who referred the user
-        referredBy[collection.minted()] = referrer;
+        
 
         // Mint the NFTs
         for (uint256 j = 0; j < quantity; j++) {
@@ -224,9 +227,9 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
             uint256 rewardAmount = calculateRewards(tokenId);
 
             if (rewardAmount > 0) {
-                lastClaim[tokenId] = block.timestamp; //update last claim
                 totalReward += rewardAmount;
             }
+            lastClaim[tokenId] = block.timestamp;
         }
 
         require(totalReward > 0, "No rewards to claim");
