@@ -73,11 +73,11 @@ contract Collection is ERC721, ERC721Enumerable, ERC721Pausable, Ownable(msg.sen
     }
 
 
-    using Strings for uint256;
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        require(_ownerOf(tokenId) != address(0), "ERC721: nonexistent token!");
-        return string(abi.encodePacked(baseURI, tokenId.toString()));
-    }
+        using Strings for uint256;
+        function tokenURI(uint256 tokenId) public view override returns (string memory) {
+            require(_ownerOf(tokenId) != address(0), "ERC721: nonexistent token!");
+            return string(abi.encodePacked(baseURI, tokenId.toString()));
+        }
 }
 
 
