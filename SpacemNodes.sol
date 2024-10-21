@@ -121,6 +121,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         usdtToken = IERC20(0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7);
         rewardsToken = IERC20(0x3c780F5cBF94De3EFCec964Af928D08c4508EeBE);
         collection = Collection(_collection);
+        
         stakingAddress = _stakingAddress;
     }
 
