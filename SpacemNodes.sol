@@ -146,7 +146,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
 
     function getPriceForQuantity(uint256 quantity) public view returns (uint256) {
         uint256 cost = 0;
-        for (uint256 i = 1; i < quantity; i++) {
+        for (uint256 i = 1; i <= quantity; i++) {
             uint256 price = getPrice(collection.minted() + i);
             cost += price;
         }
@@ -251,7 +251,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         if (lastDistributionDay < today) {
             // Calculate reward based on the number of tokens minted
             uint256 reward = (DAILY_TOKENS * collection.maxSupply()) / collection.minted();
-            dailyNodeReward[today] = reward;
+            dailyNodeReward[today - DISTRIBUTION_SPEED] = reward;
             lastDistributionDay = today; // Update the last distribution day to today
 
             require(rewardsToken.transfer(stakingAddress, DAILY_STAKING), "Failed to transfer DAILY_STAKING");
