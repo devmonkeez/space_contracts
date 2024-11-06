@@ -107,7 +107,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
     mapping(address => uint256) public invitePercent;
 
     uint256 constant DAILY_TOKENS = 601330000000000000000;
-    uint256 constant DISTIBUTION_SPEED = 1 days;  
+    uint256 constant DISTRIBUTION_SPEED = 1 days;  
     uint256 constant DAYS = 1826;
     uint256 constant DAILY_STAKING = 1500000000000000000000000;
     uint256 constant DAILY_MARKETING = 1500000000000000000000000;
@@ -194,14 +194,14 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         uint256 currentTime = block.timestamp > contractEndTime ? contractEndTime : block.timestamp;
         uint256 totalRewards = 0;
 
-        uint256 day = lastClaimTime / DISTIBUTION_SPEED * DISTIBUTION_SPEED;
-        uint256 currentDay = currentTime / DISTIBUTION_SPEED * DISTIBUTION_SPEED;
+        uint256 day = lastClaimTime / DISTRIBUTION_SPEED * DISTRIBUTION_SPEED;
+        uint256 currentDay = currentTime / DISTRIBUTION_SPEED * DISTRIBUTION_SPEED;
 
         while (day < currentDay) {
             if (dailyNodeReward[day] > 0) {
                 totalRewards += dailyNodeReward[day];
             }
-            day += DISTIBUTION_SPEED;
+            day += DISTRIBUTION_SPEED;
         }
 
         return totalRewards;
@@ -245,7 +245,7 @@ contract SpacemNodes is Ownable(msg.sender), ReentrancyGuard {
         if (collection.minted() == 0) {
             return;
         }
-        uint256 today = block.timestamp / DISTIBUTION_SPEED * DISTIBUTION_SPEED; // Normalize to the start of the day
+        uint256 today = block.timestamp / DISTRIBUTION_SPEED * DISTRIBUTION_SPEED; // Normalize to the start of the day
 
         // Check if function has already been run today
         if (lastDistributionDay < today) {
